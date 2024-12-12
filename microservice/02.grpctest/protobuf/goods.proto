@@ -1,0 +1,20 @@
+syntax="proto3";
+
+package goods;
+
+option go_package="./goods";
+
+message Request{
+    uint32 id=1;
+}
+
+message Response{
+    string name=1;
+    uint32 price=2;
+}
+
+service GoodsRpc{
+    rpc GetGoods (Request) returns(Response);
+}
+
+// 命令：protoc --go_out=.  --go-grpc_out=. *.proto

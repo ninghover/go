@@ -1,0 +1,11 @@
+syntax="proto3";
+package prototest;
+
+option go_package="github.com/hello/prototest";
+
+message User{
+    string name=1;
+    int32 age=2;
+    repeated string hobby=3;
+}
+// 命令： protoc --go_out . *.proto

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package hellomicro;
+
+option go_package = "./proto;hellomicro";
+
+service Hellomicro {
+	rpc Call(CallRequest) returns (CallResponse) {}
+}
+
+message CallRequest {
+	string name = 1;
+}
+
+message CallResponse {
+	string msg = 1;
+}
