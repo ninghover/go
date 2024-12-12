@@ -18,6 +18,7 @@ cd helloworld
 修改 go.mod第三行，改成go 1.23
 
 make proto
+123
 make tidy
 
 在main.go中添加代码（为方便查看，添加的代码后面都用"// add做标记"）
