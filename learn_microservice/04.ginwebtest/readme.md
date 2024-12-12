@@ -16,11 +16,10 @@ cd helloworld
 只留下和Call相关的
 
 修改 go.mod第三行，改成go 1.23
-
+```
 make proto
-123
 make tidy
-
+```
 在main.go中添加代码（为方便查看，添加的代码后面都用"// add做标记"）
 "github.com/asim/go-micro/plugins/registry/consul/v4"包报错，最好是在vscode中手动点击添加，用go get 会出错（不知道为什么）
 
