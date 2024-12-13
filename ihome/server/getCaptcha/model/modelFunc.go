@@ -6,7 +6,7 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-func SaveImage(code, uuid string) error {
+func SaveImage(uuid, code string) error {
 	conn, err := redis.Dial("tcp", "127.0.0.1:6379")
 	if err != nil {
 		fmt.Println("redis Dial err: ", err)
@@ -14,6 +14,6 @@ func SaveImage(code, uuid string) error {
 	}
 	defer conn.Close()
 
-	_, err = conn.Do("setex", code, 5*60, uuid)
+	_, err = conn.Do("setex", uuid, 5*60, code)
 	return err
 }

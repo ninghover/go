@@ -26,7 +26,7 @@ func (e *GetCaptcha) Call(ctx context.Context, req *pb.CallRequest, rsp *pb.Call
 	img, code := cap.Create(4, captcha.NUM)
 
 	// 将验证码保存到redis
-	model.SaveImage(code, req.GetUuid())
+	model.SaveImage(req.GetUuid(),code)
 
 	rsp.Img, _ = json.Marshal(img)
 	return nil

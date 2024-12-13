@@ -10,6 +10,7 @@ import (
 	"net/http"
 
 	getCaptcha "ihome/web/proto/getCaptcha"
+	user "ihome/web/proto/user"
 
 	"github.com/afocus/captcha"
 	"github.com/asim/go-micro/plugins/registry/consul/v4"
@@ -24,6 +25,7 @@ func GetSession(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// 获取图片验证码
 func GetImageCd(ctx *gin.Context) {
 	uuid := ctx.Param("uuid")
 	consulReg := consul.NewRegistry()
@@ -34,10 +36,39 @@ func GetImageCd(ctx *gin.Context) {
 	client := getCaptcha.NewGetCaptchaService("getCaptcha", srv.Client())
 	rsp, err := client.Call(context.TODO(), &getCaptcha.CallRequest{Uuid: uuid})
 	if err != nil {
-		fmt.Println("未找到远程服务:", err)
+		fmt.Println("GetImageCd 远程调用失败:", err)
 	}
 	var img captcha.Image
 	json.Unmarshal(rsp.Img, &img)
 
 	png.Encode(ctx.Writer, &img)
+}
+
+// 获取短信验证码
+func GetSmsCd(ctx *gin.Context) {
+	phone := ctx.Param("phone")
+	imgCode := ctx.Query("text")
+	uuid := ctx.Query("id")
+
+	consulReg := consul.NewRegistry()
+	srv := micro.NewService(
+		micro.Registry(consulReg),
+	)
+	client := user.NewUserService("user", srv.Client())
+	rsp, err := client.SendSms(context.TODO(), &user.Request{Phone: phone, ImgCode: imgCode, Uuid: uuid})
+	if err != nil {
+		fmt.Println("GetSmsCd 远程调用失败:", err)
+	}
+	ctx.JSON(http.StatusOK, rsp)
+}
+
+// 注册新用户
+func PostRet(ctx *gin.Context) {
+	var regData struct {
+		Mobile   string `json:"mobile"`
+		PassWord string `json:"password"`
+		SmsCode  string `json:"sms_code"`
+	}
+	ctx.Bind(&regData)
+	fmt.Println("接收到的数据为：", regData)
 }
