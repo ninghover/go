@@ -55,7 +55,7 @@ func GetSmsCd(ctx *gin.Context) {
 		micro.Registry(consulReg),
 	)
 	client := user.NewUserService("user", srv.Client())
-	rsp, err := client.SendSms(context.TODO(), &user.Request{Phone: phone, ImgCode: imgCode, Uuid: uuid})
+	rsp, err := client.SendSms(context.TODO(), &user.SmsReq{Phone: phone, ImgCode: imgCode, Uuid: uuid})
 	if err != nil {
 		fmt.Println("GetSmsCd 远程调用失败:", err)
 	}
@@ -70,5 +70,17 @@ func PostRet(ctx *gin.Context) {
 		SmsCode  string `json:"sms_code"`
 	}
 	ctx.Bind(&regData)
-	fmt.Println("接收到的数据为：", regData)
+	consulReg := consul.NewRegistry()
+	srv := micro.NewService(
+		micro.Registry(consulReg),
+	)
+	client := user.NewUserService("user", srv.Client())
+	rsp, err := client.Register(context.TODO(), &user.RegReq{Mobile: regData.Mobile, Password: regData.PassWord, Smscode: regData.SmsCode})
+	fmt.Println("rsp=",rsp)
+	fmt.Println("err=",err)
+	if err != nil {
+		fmt.Println("PostRet 远程调用失败")
+		ctx.JSON(http.StatusOK, rsp)
+	}
+	ctx.JSON(http.StatusOK, rsp)
 }

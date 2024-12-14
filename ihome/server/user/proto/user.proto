@@ -6,16 +6,28 @@ option go_package = "./proto;user";
 
 service User {
 	// 发送短信验证码
-	rpc SendSms(Request) returns (Response) {}
+	rpc SendSms(SmsReq) returns (SmsRsp) {};
+	rpc Register(RegReq) returns(ReqRsp){}
 }
 
-message Request {
+message SmsReq {
 	string phone = 1;
 	string imgCode=2;
 	string uuid=3;
 }
 
-message Response {
+message SmsRsp {
+	string errno=1;
+	string errmsg=2;
+}
+
+message RegReq{
+	string mobile=1;
+	string password=2;
+	string smscode=3;
+}
+
+message ReqRsp{
 	string errno=1;
 	string errmsg=2;
 }

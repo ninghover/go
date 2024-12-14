@@ -37,7 +37,8 @@ func NewUserEndpoints() []*api.Endpoint {
 
 type UserService interface {
 	// 发送短信验证码
-	SendSms(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
+	SendSms(ctx context.Context, in *SmsReq, opts ...client.CallOption) (*SmsRsp, error)
+	Register(ctx context.Context, in *RegReq, opts ...client.CallOption) (*ReqRsp, error)
 }
 
 type userService struct {
@@ -52,9 +53,19 @@ func NewUserService(name string, c client.Client) UserService {
 	}
 }
 
-func (c *userService) SendSms(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error) {
+func (c *userService) SendSms(ctx context.Context, in *SmsReq, opts ...client.CallOption) (*SmsRsp, error) {
 	req := c.c.NewRequest(c.name, "User.SendSms", in)
-	out := new(Response)
+	out := new(SmsRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) Register(ctx context.Context, in *RegReq, opts ...client.CallOption) (*ReqRsp, error) {
+	req := c.c.NewRequest(c.name, "User.Register", in)
+	out := new(ReqRsp)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -66,12 +77,14 @@ func (c *userService) SendSms(ctx context.Context, in *Request, opts ...client.C
 
 type UserHandler interface {
 	// 发送短信验证码
-	SendSms(context.Context, *Request, *Response) error
+	SendSms(context.Context, *SmsReq, *SmsRsp) error
+	Register(context.Context, *RegReq, *ReqRsp) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
 	type user interface {
-		SendSms(ctx context.Context, in *Request, out *Response) error
+		SendSms(ctx context.Context, in *SmsReq, out *SmsRsp) error
+		Register(ctx context.Context, in *RegReq, out *ReqRsp) error
 	}
 	type User struct {
 		user
@@ -84,6 +97,10 @@ type userHandler struct {
 	UserHandler
 }
 
-func (h *userHandler) SendSms(ctx context.Context, in *Request, out *Response) error {
+func (h *userHandler) SendSms(ctx context.Context, in *SmsReq, out *SmsRsp) error {
 	return h.UserHandler.SendSms(ctx, in, out)
+}
+
+func (h *userHandler) Register(ctx context.Context, in *RegReq, out *ReqRsp) error {
+	return h.UserHandler.Register(ctx, in, out)
 }

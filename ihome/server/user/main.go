@@ -16,6 +16,9 @@ var (
 )
 
 func main() {
+	// 初始化DB
+	model.InitDB()
+
 	// 初始化Redis连接池
 	model.InitRedisPool()
 

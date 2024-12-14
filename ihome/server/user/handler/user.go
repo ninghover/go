@@ -16,11 +16,7 @@ import (
 
 type User struct{}
 
-func (e *User) SendSms(ctx context.Context, req *pb.Request, rsp *pb.Response) error {
-	// req.ImgCode
-	// req.Phone
-	// req.Uuid
-
+func (u *User) SendSms(ctx context.Context, req *pb.SmsReq, rsp *pb.SmsRsp) error {
 	// 图片验证码校验失败
 	if req.ImgCode != model.GetImgCode(req.Uuid) {
 		rsp.Errno = utils.RECODE_DATAERR
@@ -30,7 +26,6 @@ func (e *User) SendSms(ctx context.Context, req *pb.Request, rsp *pb.Response) e
 	// 发送短信验证码
 	client, _ := func() (*dysmsapi20170525.Client, error) {
 		id, secret, err := utils.ReadIdAndSecret("../../secret.txt") //相对于启动路径的地址（main.go）
-		fmt.Println(id, secret, err)
 		if err != nil {
 			return nil, err
 		}
@@ -58,6 +53,26 @@ func (e *User) SendSms(ctx context.Context, req *pb.Request, rsp *pb.Response) e
 
 	// 将短信验证码写入redis
 	model.SaveSms(req.Phone, smsCode)
+	rsp.Errno = utils.RECODE_OK
+	rsp.Errmsg = utils.RecodeText(utils.RECODE_OK)
+	return nil
+}
+
+func (u *User) Register(ctx context.Context, req *pb.RegReq, rsp *pb.ReqRsp) error {
+	fmt.Println("验证码错误")
+	if req.Smscode != model.GetSms(req.Mobile) {
+		rsp.Errno = utils.RECODE_DATAERR
+		rsp.Errmsg = utils.RecodeText(utils.RECODE_DATAERR)
+		// return errors.New("验证码错误")	// 如果返回了nil，grpc框架在调用方不会正确的设置rsp的值
+		return nil
+	}
+	// 存到数据库中
+	if err := model.UserRegister(req.Mobile, req.Password); err != nil {
+		fmt.Println("数据库错误")
+		rsp.Errno = utils.RECODE_DBERR
+		rsp.Errmsg = utils.RecodeText(utils.RECODE_DBERR)
+		return nil // 同上
+	}
 	rsp.Errno = utils.RECODE_OK
 	rsp.Errmsg = utils.RecodeText(utils.RECODE_OK)
 	return nil

@@ -1,23 +1,20 @@
 package model
 
 import (
-	"time"
+	"crypto/md5"
+	"encoding/hex"
 
 	"github.com/gomodule/redigo/redis"
 )
 
-var RedisPool redis.Pool
-
-func InitRedisPool() {
-	RedisPool = redis.Pool{
-		MaxIdle:     10,
-		MaxActive:   50,
-		IdleTimeout: 5 * 60 * time.Second,
-		Dial: func() (redis.Conn, error) {
-			return redis.Dial("tcp", "127.0.0.1:6379")
-		},
-	}
+func UserRegister(mobile, passeord string) error {
+	md5 := md5.New()
+	md5.Write([]byte(passeord))
+	hash := hex.EncodeToString(md5.Sum(nil))
+	return GlobalDB.Create(&User{Mobile: mobile, Password_hash: hash}).Error
 }
+
+// SaveImgCode写在getCaptcha服务中的
 
 func GetImgCode(uuid string) string {
 	conn := RedisPool.Get()
@@ -31,4 +28,11 @@ func SaveSms(phone, code string) error {
 	defer conn.Close()
 	_, err := conn.Do("setex", phone+"_ssm_code", 5*60, code)
 	return err
+}
+
+func GetSms(phone string) string {
+	conn := RedisPool.Get()
+	defer conn.Close()
+	reply, _ := redis.String(conn.Do("get", phone+"_ssm_code"))
+	return reply
 }

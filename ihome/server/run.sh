@@ -5,9 +5,9 @@ sleep 5
 
 echo "consul agent -dev..."
 
-dirs=$(find . -maxdepth 1 -type d -not -path '*/\.*' | grep -v '^.$')
+dirs=("getCaptcha")
 
-for dir in $dirs; do
+for dir in "${dirs[@]}"; do
     echo "$dir 已启动..."
     cd "$dir"
     go run . &
