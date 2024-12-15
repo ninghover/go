@@ -16,7 +16,7 @@ $(document).ready(function () {
     $.get("/api/v1.0/user", function(resp){
         // 用户未登录
         if ("4101" == resp.errno) {
-            location.href = "/login.html";
+            location.href = "./login.html";
         }
         // 查询到了用户的信息
         else if ("0" == resp.errno) {
@@ -44,7 +44,7 @@ $(document).ready(function () {
                     $("#user-avatar").attr("src", resp.data.avatar_url);
                 } else if (resp.errno == "4101") {
                     // 表示用户未登录，跳转到登录页面
-                    location.href = "/login.html";
+                    location.href = "./login.html";
                 } else {
                     alert(resp.errmsg);
                 }
@@ -77,7 +77,7 @@ $(document).ready(function () {
                 } else if ("4001" == data.errno) {
                     $(".error-msg").show();
                 } else if ("4101" == data.errno) {
-                    location.href = "/login.html";
+                    location.href = "./login.html";
                 }
             }
         });

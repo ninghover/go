@@ -38,7 +38,10 @@ func NewUserEndpoints() []*api.Endpoint {
 type UserService interface {
 	// 发送短信验证码
 	SendSms(ctx context.Context, in *SmsReq, opts ...client.CallOption) (*SmsRsp, error)
+	// 注册
 	Register(ctx context.Context, in *RegReq, opts ...client.CallOption) (*ReqRsp, error)
+	// 登录
+	Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*LoginRsp, error)
 }
 
 type userService struct {
@@ -73,18 +76,32 @@ func (c *userService) Register(ctx context.Context, in *RegReq, opts ...client.C
 	return out, nil
 }
 
+func (c *userService) Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*LoginRsp, error) {
+	req := c.c.NewRequest(c.name, "User.Login", in)
+	out := new(LoginRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for User service
 
 type UserHandler interface {
 	// 发送短信验证码
 	SendSms(context.Context, *SmsReq, *SmsRsp) error
+	// 注册
 	Register(context.Context, *RegReq, *ReqRsp) error
+	// 登录
+	Login(context.Context, *LoginReq, *LoginRsp) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
 	type user interface {
 		SendSms(ctx context.Context, in *SmsReq, out *SmsRsp) error
 		Register(ctx context.Context, in *RegReq, out *ReqRsp) error
+		Login(ctx context.Context, in *LoginReq, out *LoginRsp) error
 	}
 	type User struct {
 		user
@@ -103,4 +120,8 @@ func (h *userHandler) SendSms(ctx context.Context, in *SmsReq, out *SmsRsp) erro
 
 func (h *userHandler) Register(ctx context.Context, in *RegReq, out *ReqRsp) error {
 	return h.UserHandler.Register(ctx, in, out)
+}
+
+func (h *userHandler) Login(ctx context.Context, in *LoginReq, out *LoginRsp) error {
+	return h.UserHandler.Login(ctx, in, out)
 }

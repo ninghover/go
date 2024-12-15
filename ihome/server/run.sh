@@ -5,7 +5,7 @@ sleep 5
 
 echo "consul agent -dev..."
 
-dirs=("getCaptcha")
+dirs=("getCaptcha" "getArea" "user")
 
 for dir in "${dirs[@]}"; do
     echo "$dir 已启动..."

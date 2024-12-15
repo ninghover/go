@@ -45,7 +45,7 @@ $(document).ready(function(){
                     },
                     success:function (resp) {
                         if ("4101" == resp.errno) {
-                            location.href = "/login.html";
+                            location.href = "./login.html";
                         } else if ("0" == resp.errno) {
                             $(".orders-list>li[order-id="+ orderId +"]>div.order-content>div.order-text>ul li:eq(4)>span").html("已完成");
                             $("ul.orders-list>li[order-id="+ orderId +"]>div.order-title>div.order-operate").hide();

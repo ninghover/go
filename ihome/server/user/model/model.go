@@ -11,7 +11,7 @@ func UserRegister(mobile, passeord string) error {
 	md5 := md5.New()
 	md5.Write([]byte(passeord))
 	hash := hex.EncodeToString(md5.Sum(nil))
-	return GlobalDB.Create(&User{Mobile: mobile, Password_hash: hash}).Error
+	return GlobalDB.Create(&User{Mobile: mobile, Password_hash: hash, Name: mobile}).Error
 }
 
 // SaveImgCode写在getCaptcha服务中的
@@ -35,4 +35,16 @@ func GetSms(phone string) string {
 	defer conn.Close()
 	reply, _ := redis.String(conn.Do("get", phone+"_ssm_code"))
 	return reply
+}
+
+func Login(phone, password string) (string, error) {
+	md5 := md5.New()
+	md5.Write([]byte(password)) // 将字符串转换为字节切片
+	hash := hex.EncodeToString(md5.Sum(nil))
+	var user User
+	err := GlobalDB.Where("mobile=? and password_hash=?", phone, hash).First(&user).Error
+	if err != nil {
+		return "", err // 没查到
+	}
+	return user.Name, nil
 }

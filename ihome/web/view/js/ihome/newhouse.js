@@ -51,7 +51,7 @@ $(document).ready(function(){
             },
             success: function(resp){
                 if ("4101" == resp.errno) {
-                    location.href = "/login.html";
+                    location.href = "./login.html";
                 } else if ("0" == resp.errno) {
                     // 后端保存数据成功
                     // 隐藏基本信息的表单
@@ -81,7 +81,7 @@ $(document).ready(function(){
             dataType: "json",
             success: function (resp) {
                 if ("4101" == resp.errno) {
-                    location.href = "/login.html";
+                    location.href = "./login.html";
                 } else if ("0" == resp.errno) {
                     // 在前端中添加一个img标签，展示上传的图片
                     $(".house-image-cons").append('<img src="'+ resp.data.url+'">');

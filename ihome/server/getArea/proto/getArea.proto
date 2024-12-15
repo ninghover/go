@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package getArea;
+
+option go_package = "./proto;getArea";
+
+service GetArea {
+	rpc GetArea(AreaReq) returns (AreaRsp) {}
+
+}
+
+message AreaReq {
+	
+}
+
+message AreaRsp {
+	string errno=1;
+	string errmsg=2;
+	repeated AreaInfo data=3;
+}
+
+message AreaInfo{
+	uint32 aid=1;
+	string aname=2;
+}

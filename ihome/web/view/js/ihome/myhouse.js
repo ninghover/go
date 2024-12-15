@@ -3,7 +3,7 @@ $(document).ready(function(){
     $.get("/api/v1.0/user/auth", function(resp){
         if ("4101" == resp.errno) {
             // 用户未登录
-            location.href = "/login.html";
+            location.href = "./login.html";
         } else if ("0" == resp.errno) {
             // 未认证的用户，在页面中展示 "去认证"的按钮
             if (!(resp.data.real_name && resp.data.id_card)) {

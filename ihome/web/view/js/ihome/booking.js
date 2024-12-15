@@ -28,7 +28,7 @@ $(document).ready(function(){
     // 判断用户是否登录
     $.get("/api/v1.0/session", function(resp) {
         if ("0" != resp.errno) {
-            location.href = "/login.html";
+            location.href = "./login.html";
         }
     }, "json");
     $(".input-daterange").datepicker({
@@ -85,11 +85,11 @@ $(document).ready(function(){
                 },
                 success: function (resp) {
                     if ("4101" == resp.errno) {
-                        location.href = "/login.html";
+                        location.href = "./login.html";
                     } else if ("4004" == resp.errno) {
                         showErrorMsg("房间已被抢定，请重新选择日期！");
                     } else if ("0" == resp.errno) {
-                        location.href = "/orders.html";
+                        location.href = "./orders.html";
                     }
                 }
             });

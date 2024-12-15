@@ -7,7 +7,10 @@ option go_package = "./proto;user";
 service User {
 	// 发送短信验证码
 	rpc SendSms(SmsReq) returns (SmsRsp) {};
-	rpc Register(RegReq) returns(ReqRsp){}
+	// 注册
+	rpc Register(RegReq) returns(ReqRsp){};
+	// 登录
+	rpc Login(LoginReq)returns(LoginRsp){};
 }
 
 message SmsReq {
@@ -30,4 +33,15 @@ message RegReq{
 message ReqRsp{
 	string errno=1;
 	string errmsg=2;
+}
+
+message LoginReq{
+	string mobile=1;
+	string password=2;
+}
+
+message LoginRsp{
+	string errno=1;
+	string errmsg=2;
+	string name=3;
 }

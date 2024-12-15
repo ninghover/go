@@ -25,7 +25,7 @@ func (u *User) SendSms(ctx context.Context, req *pb.SmsReq, rsp *pb.SmsRsp) erro
 	}
 	// 发送短信验证码
 	client, _ := func() (*dysmsapi20170525.Client, error) {
-		id, secret, err := utils.ReadIdAndSecret("../../secret.txt") //相对于启动路径的地址（main.go）
+		id, secret, err := utils.ReadIdAndSecret("../../conf/secret.txt") //相对于启动路径的地址（main.go）s
 		if err != nil {
 			return nil, err
 		}
@@ -75,5 +75,19 @@ func (u *User) Register(ctx context.Context, req *pb.RegReq, rsp *pb.ReqRsp) err
 	}
 	rsp.Errno = utils.RECODE_OK
 	rsp.Errmsg = utils.RecodeText(utils.RECODE_OK)
+	return nil
+}
+
+func (u *User) Login(ctx context.Context, req *pb.LoginReq, rsp *pb.LoginRsp) error {
+	name, err := model.Login(req.Mobile, req.Password)
+	if err != nil {
+		rsp.Errno = utils.RECODE_LOGINERR
+		rsp.Errmsg = utils.RecodeText(utils.RECODE_LOGINERR)
+		rsp.Name = ""
+		return nil // 如果返回err的话，调用方接不到rsp
+	}
+	rsp.Errno = utils.RECODE_OK
+	rsp.Errmsg = utils.RecodeText(utils.RECODE_OK)
+	rsp.Name = name
 	return nil
 }

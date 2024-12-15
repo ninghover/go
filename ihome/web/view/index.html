@@ -21,7 +21,7 @@
                 <a class="btn top-btn btn-theme" href="./register.html" style="float:right">注册</a>
                 <a class="btn top-btn btn-theme" href="./login.html" style="float:right">登录</a>
             </div>
-            <div class="user-info fr"><span><i class="fa fa-user fa-lg"></i></span> <a class="user-name" href="/my.html"></a></div>
+            <div class="user-info fr"><span><i class="fa fa-user fa-lg"></i></span> <a class="user-name" href="./my.html"></a></div>
         </div>
         <div class="swiper-container">
             <div class="swiper-wrapper">
@@ -29,7 +29,7 @@
             <script id="swiper-houses-tmpl" type="text/html">
                 {{each houses as house}}
                 <div class="swiper-slide">
-                    <a href="/detail.html?id={{house.house_id}}"><img src="{{house.img_url}}"></a>
+                    <a href="./detail.html?id={{house.house_id}}"><img src="{{house.img_url}}"></a>
                     <div class="slide-title">{{house.title}}</div>
                 </div>
                 {{/each}}
