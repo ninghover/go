@@ -91,3 +91,49 @@ func (u *User) Login(ctx context.Context, req *pb.LoginReq, rsp *pb.LoginRsp) er
 	rsp.Name = name
 	return nil
 }
+
+func (u *User) GetUserInfo(ctx context.Context, req *pb.UserInfoReq, rsp *pb.UserInfoRsp) error {
+	user, err := model.GetUserInfo(req.Name)
+	if err != nil {
+		rsp.Errno = utils.RECODE_ROLEERR
+		rsp.Errmsg = utils.RecodeText(utils.RECODE_ROLEERR)
+		return nil
+	}
+	rsp.Errno = utils.RECODE_OK
+	rsp.Errmsg = utils.RecodeText(utils.RECODE_OK)
+	userInfo := pb.UserInfo{
+		UserId:    uint32(user.ID),
+		Name:      user.Name,
+		Mobile:    user.Mobile,
+		RealName:  user.Real_name,
+		IdCard:    user.Id_card,
+		AvararUrl: user.Avatar_url,
+	}
+	rsp.Data = &userInfo
+	return nil
+}
+
+func (u *User) UpdateUserName(ctx context.Context, req *pb.UserNameReq, rsp *pb.UserNameRsp) error {
+	err := model.UpdateUserName(req.OldName, req.NewName)
+	if err != nil {
+		rsp.Errno = utils.RECODE_DATAERR
+		rsp.Errmsg = utils.RecodeText(utils.RECODE_DATAERR)
+		return nil
+	}
+	rsp.Errno = utils.RECODE_OK
+	rsp.Errmsg = utils.RecodeText(utils.RECODE_OK)
+	rsp.Data = &pb.UserNameRsp_Name{Name: req.NewName}
+	return nil
+}
+
+func (u *User) UserAuthPost(ctx context.Context, req *pb.UserAuthReq, rsp *pb.UserAuthRsp) error {
+	err := model.UserAuthPost(req.Name, req.RealName, req.IdCard)
+	if err != nil {
+		rsp.Errno = utils.RECODE_DATAERR
+		rsp.Errmsg = utils.RecodeText(utils.RECODE_DATAERR)
+	} else {
+		rsp.Errno = utils.RECODE_OK
+		rsp.Errmsg = utils.RecodeText(utils.RECODE_OK)
+	}
+	return nil
+}

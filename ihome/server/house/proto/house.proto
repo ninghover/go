@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package house;
+
+option go_package = "./proto;house";
+
+service House {
+	rpc GetHouseInfo(HouseInfoReq) returns (HouseInfoRsp) {};
+	rpc PostHouseInfo(PostHouseReq) returns(PostHouseRsp){};
+}
+
+message HouseInfoReq{
+	string name=1;
+}
+
+message HouseInfoRsp{
+	string errno=1;
+	string errmsg=2;
+	GetData data=3;
+}
+
+message GetData{
+	repeated AHouse houses=1;
+}
+
+message AHouse{	// 不能和上面的service重复
+	string address = 1;
+	string area_name = 2 ;
+	string ctime = 3;
+	int32 house_id=4;
+	string img_url=5;
+	int32 order_count=6;
+	int32 price=7;
+	int32 room_count = 8;
+	string title=9;
+	string user_avatar=10;
+}
+
+message PostHouseReq{
+	string acreage=1;
+	string address=2;
+	string area_id=3;
+	string beds=4;
+	string capacity=5;
+	string deposit=6;
+	repeated string facility=7;
+	string max_days=8;
+	string min_days=9;
+	string price=10;
+	string room_count=11;
+	string title=12;
+	string unit=13;
+	string userName=14;
+}
+
+message PostHouseRsp{
+	string errno=1;
+	string errmsg=2;
+	message Data{
+		string house_id=1;
+	}
+	Data data=3;
+}

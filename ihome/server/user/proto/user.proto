@@ -11,6 +11,12 @@ service User {
 	rpc Register(RegReq) returns(ReqRsp){};
 	// 登录
 	rpc Login(LoginReq)returns(LoginRsp){};
+	// 获取用户信息
+	rpc GetUserInfo(UserInfoReq)returns(UserInfoRsp){};
+	// 更新用户名
+	rpc UpdateUserName(UserNameReq)returns(UserNameRsp){};
+	// 用户实名认证
+	rpc UserAuthPost(UserAuthReq)returns(UserAuthRsp){};
 }
 
 message SmsReq {
@@ -44,4 +50,48 @@ message LoginRsp{
 	string errno=1;
 	string errmsg=2;
 	string name=3;
+}
+
+message UserInfoReq{
+	string name=1;
+}
+
+message UserInfo{
+	uint32 user_id=1;	// 和json里面对应（名字也要一样）
+	string name =2;
+	string mobile=3;
+	string real_name=4;
+	string id_card=5;
+	string avarar_url=6;
+}
+
+message UserInfoRsp{
+	string errno=1;
+	string errmsg=2;
+	UserInfo data=3;
+}
+
+message UserNameReq{
+	string old_name=1;
+	string new_name=2;
+}
+
+message UserNameRsp{
+	string errno=1;
+	string errmsg=2;
+	message Name{
+		string name=1;
+	}
+	Name data=3;
+}
+
+message UserAuthReq{
+	string name = 1;
+	string real_name = 2;
+	string id_card = 3; 
+}
+
+message UserAuthRsp{
+	string errno=1;
+	string errmsg=2;
 }

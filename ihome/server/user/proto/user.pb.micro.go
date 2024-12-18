@@ -42,6 +42,12 @@ type UserService interface {
 	Register(ctx context.Context, in *RegReq, opts ...client.CallOption) (*ReqRsp, error)
 	// 登录
 	Login(ctx context.Context, in *LoginReq, opts ...client.CallOption) (*LoginRsp, error)
+	// 获取用户信息
+	GetUserInfo(ctx context.Context, in *UserInfoReq, opts ...client.CallOption) (*UserInfoRsp, error)
+	// 更新用户名
+	UpdateUserName(ctx context.Context, in *UserNameReq, opts ...client.CallOption) (*UserNameRsp, error)
+	// 用户实名认证
+	UserAuthPost(ctx context.Context, in *UserAuthReq, opts ...client.CallOption) (*UserAuthRsp, error)
 }
 
 type userService struct {
@@ -86,6 +92,36 @@ func (c *userService) Login(ctx context.Context, in *LoginReq, opts ...client.Ca
 	return out, nil
 }
 
+func (c *userService) GetUserInfo(ctx context.Context, in *UserInfoReq, opts ...client.CallOption) (*UserInfoRsp, error) {
+	req := c.c.NewRequest(c.name, "User.GetUserInfo", in)
+	out := new(UserInfoRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) UpdateUserName(ctx context.Context, in *UserNameReq, opts ...client.CallOption) (*UserNameRsp, error) {
+	req := c.c.NewRequest(c.name, "User.UpdateUserName", in)
+	out := new(UserNameRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) UserAuthPost(ctx context.Context, in *UserAuthReq, opts ...client.CallOption) (*UserAuthRsp, error) {
+	req := c.c.NewRequest(c.name, "User.UserAuthPost", in)
+	out := new(UserAuthRsp)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for User service
 
 type UserHandler interface {
@@ -95,6 +131,12 @@ type UserHandler interface {
 	Register(context.Context, *RegReq, *ReqRsp) error
 	// 登录
 	Login(context.Context, *LoginReq, *LoginRsp) error
+	// 获取用户信息
+	GetUserInfo(context.Context, *UserInfoReq, *UserInfoRsp) error
+	// 更新用户名
+	UpdateUserName(context.Context, *UserNameReq, *UserNameRsp) error
+	// 用户实名认证
+	UserAuthPost(context.Context, *UserAuthReq, *UserAuthRsp) error
 }
 
 func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.HandlerOption) error {
@@ -102,6 +144,9 @@ func RegisterUserHandler(s server.Server, hdlr UserHandler, opts ...server.Handl
 		SendSms(ctx context.Context, in *SmsReq, out *SmsRsp) error
 		Register(ctx context.Context, in *RegReq, out *ReqRsp) error
 		Login(ctx context.Context, in *LoginReq, out *LoginRsp) error
+		GetUserInfo(ctx context.Context, in *UserInfoReq, out *UserInfoRsp) error
+		UpdateUserName(ctx context.Context, in *UserNameReq, out *UserNameRsp) error
+		UserAuthPost(ctx context.Context, in *UserAuthReq, out *UserAuthRsp) error
 	}
 	type User struct {
 		user
@@ -124,4 +169,16 @@ func (h *userHandler) Register(ctx context.Context, in *RegReq, out *ReqRsp) err
 
 func (h *userHandler) Login(ctx context.Context, in *LoginReq, out *LoginRsp) error {
 	return h.UserHandler.Login(ctx, in, out)
+}
+
+func (h *userHandler) GetUserInfo(ctx context.Context, in *UserInfoReq, out *UserInfoRsp) error {
+	return h.UserHandler.GetUserInfo(ctx, in, out)
+}
+
+func (h *userHandler) UpdateUserName(ctx context.Context, in *UserNameReq, out *UserNameRsp) error {
+	return h.UserHandler.UpdateUserName(ctx, in, out)
+}
+
+func (h *userHandler) UserAuthPost(ctx context.Context, in *UserAuthReq, out *UserAuthRsp) error {
+	return h.UserHandler.UserAuthPost(ctx, in, out)
 }

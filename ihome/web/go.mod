@@ -9,6 +9,7 @@ require (
 	github.com/gin-contrib/sessions v1.0.1
 	github.com/gin-gonic/gin v1.10.0
 	github.com/gomodule/redigo v2.0.0+incompatible
+	github.com/tedcy/fdfs_client v0.0.0-20200106031142-21a04994525a
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/gorm v1.25.12
 )
